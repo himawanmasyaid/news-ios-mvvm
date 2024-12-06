@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+    @StateObject var viewModel = HomeViewModel()
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -27,16 +30,19 @@ struct HomeView: View {
                             
                 Spacer()
 
-                List(getNewsList) { news in
+                List(viewModel.newsList) { news in
                     NavigationLink(
                         destination: {
                             NewsDetailView(news: news)
                         }
                     ) {
                         NewsItem(news: news)
-                    }
+                    }.listRowSeparator(.hidden)
+                    
                 }.listStyle(PlainListStyle())
-                
+                    
+            }.onAppear {
+                viewModel.getNewsDummy()
             }
         }
     }
@@ -94,48 +100,10 @@ struct NewsItem: View {
         .padding(.trailing, 8) // padding end
         .padding(.leading, 24) // padding start
         .padding(.vertical, 8)
-        .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 2)
+        .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
         
     }
 }
-
-let getNewsList = [
-    NewsModel(
-        author: "Jane Smith",
-        content: "Another article content.",
-        description: "Short description for the second news.",
-        publishedAt: "2024-12-05T10:00:00Z",
-        source: NewsModel.Source(id: "2", name: "Another News"),
-        title: "Big Announcement Today!",
-        url:"",
-        urlToImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcMZAw6lm9s-UNFPFMRXSAe1t4r1dWS4nKkw&s"
-    ),
-    NewsModel(
-        author: "Jane Smith",
-        content: "Another article content.",
-        description: "Short description for the second news.",
-        publishedAt: "2024-12-05T10:00:00Z",
-        source: NewsModel.Source(id: "2", name: "Another News"),
-        title: "Big Announcement Today!",
-        url:"",
-        urlToImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcMZAw6lm9s-UNFPFMRXSAe1t4r1dWS4nKkw&s"
-    ),
-    getNews,
-    getNews,
-    getNews
-]
-
-let getNews = NewsModel(
-    author: "Jane Smith",
-    content: "Another article content.",
-    description: "Short description for the second news.",
-    publishedAt: "2024-12-05T10:00:00Z",
-    source: NewsModel.Source(id: "2", name: "Another News"),
-    title: "Big Announcement Today!",
-    url:"",
-    urlToImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcMZAw6lm9s-UNFPFMRXSAe1t4r1dWS4nKkw&s"
-)
-
 
 #Preview {
     

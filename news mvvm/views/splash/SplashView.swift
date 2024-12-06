@@ -8,8 +8,31 @@
 import SwiftUI
 
 struct SplashView: View {
+    
+    @State private var isNavigateToHome = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        if isNavigateToHome {
+            HomeView()
+        } else {
+            ZStack {
+                Color("PrimaryColor") // Background color
+                    .ignoresSafeArea()
+                VStack {
+                    Image("ic_logo_news_api")
+                        .resizable()
+                        .frame(width: 200, height: 100)
+                }
+            }.onAppear {
+                // Delay of 2 seconds before navigating
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    // navigate to home view
+                    isNavigateToHome = true
+                }
+            }
+        }
+        
     }
 }
 

@@ -11,7 +11,7 @@ import SwiftUI
 struct news_mvvmApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
     }
 }

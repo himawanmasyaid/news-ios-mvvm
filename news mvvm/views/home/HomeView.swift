@@ -30,19 +30,39 @@ struct HomeView: View {
                             
                 Spacer()
 
-                List(viewModel.newsList) { news in
-                    NavigationLink(
-                        destination: {
-                            NewsDetailView(news: news)
-                        }
-                    ) {
-                        NewsItem(news: news)
-                    }.listRowSeparator(.hidden)
+                // content headline news
+                if viewModel.isLoadingHeadline {
                     
-                }.listStyle(PlainListStyle())
+                    ProgressView("Loading...")
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     
+                } else if let error = viewModel.errorMessageHeadline {
+                    
+                    Text("Error: \(error)")
+                         .foregroundColor(.red)
+                         .padding()
+                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    
+                } else {
+                    
+                    List(viewModel.newsList.indices, id: \.self) { index in
+                        
+                        let article = viewModel.newsList[index]
+                        
+                         NavigationLink(destination: NewsDetailView(news: article)) {
+                             NewsDetailView(news: article)
+                         }
+                         .listRowSeparator(.hidden)
+                     }
+                     .listStyle(PlainListStyle())
+                    
+                }
+                
             }.onAppear {
-                viewModel.getNewsDummy()
+                Task {
+                    await viewModel.getTopHeadlines()
+                }
             }
         }
     }
@@ -50,45 +70,62 @@ struct HomeView: View {
 
 struct NewsItem: View {
     
-    let news: NewsModel
+    let news: Article
     
     var body: some View {
         VStack(alignment: .leading) {
             
-            if let imageUrl = URL(string: news.urlToImage), !news.urlToImage.isEmpty {
+//            if let imageUrl = URL(string: news.urlToImage ?? ""), !news.urlToImage.isEmpty {
+//                AsyncImage(url: imageUrl) { image in
+//                    image.resizable()
+//                        .aspectRatio(contentMode: .fill)
+//                        .frame(maxWidth: .infinity, maxHeight: 200)
+//                        .clipped()
+//                } placeholder: {
+//                    ProgressView() // Placeholder while loading
+//                }
+//            }
+            
+            
+            if let guardImage = news.urlToImage, let imageUrl = URL(string: guardImage), ((news.urlToImage?.isEmpty) == nil) {
+                            
                 AsyncImage(url: imageUrl) { image in
                     image.resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity, maxHeight: 200)
+                        .frame(maxWidth: .infinity)
                         .clipped()
                 } placeholder: {
-                    ProgressView() // Placeholder while loading
+                    ProgressView() // Placeholder for missing image
                 }
             }
             
-            
             Text(news.title)
                 .font(.headline)
+                .lineLimit(2)
+                .truncationMode(.tail)
                 .foregroundColor(.black)
                 .padding(.horizontal, 8)
                 .padding(.top, 24)
+
             
-            Text(news.description)
+            Text(news.description ?? "-")
                 .font(.subheadline)
+                .lineLimit(2)
+                .truncationMode(.tail)
                 .foregroundColor(.gray)
                 .padding(.top, 8)
                 .padding(.horizontal, 8)
             
             HStack {
-                if !news.author.isEmpty {
-                    Text("By \(news.author)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                
+                Text("By \(news.author ?? "-")")
+                    .font(.caption)
+                    .foregroundColor(.black)
+                
                 Spacer()
                 Text(formatDate(news.publishedAt))
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.black)
             }
             .padding(.top, 8)
             .padding(.horizontal, 8)

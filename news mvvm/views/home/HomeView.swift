@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct HomeView: View {
     
@@ -28,7 +29,7 @@ struct HomeView: View {
                  .background(Color.white)
                  .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
                             
-                Spacer()
+                Spacer() // memberi jarak toolbar dengan content
 
                 // content headline news
                 if viewModel.isLoadingHeadline {
@@ -45,18 +46,20 @@ struct HomeView: View {
                          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     
                 } else {
-                    
-                    List(viewModel.newsList.indices, id: \.self) { index in
+                                        
+                    ScrollView {
+                        // using for earch
+                        ForEach(viewModel.newsList.indices, id: \.self) { index in
+        
+                            let item = viewModel.newsList[index]
+                            
+                             NavigationLink(destination: NewsDetailView(news: item)) {
+                                 NewsItem(news:item)
+                             }
+                        }
                         
-                        let article = viewModel.newsList[index]
-                        
-                         NavigationLink(destination: NewsDetailView(news: article)) {
-                             NewsDetailView(news: article)
-                         }
-                         .listRowSeparator(.hidden)
-                     }
-                     .listStyle(PlainListStyle())
-                    
+                    }
+
                 }
                 
             }.onAppear {
@@ -74,45 +77,25 @@ struct NewsItem: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            
-//            if let imageUrl = URL(string: news.urlToImage ?? ""), !news.urlToImage.isEmpty {
-//                AsyncImage(url: imageUrl) { image in
-//                    image.resizable()
-//                        .aspectRatio(contentMode: .fill)
-//                        .frame(maxWidth: .infinity, maxHeight: 200)
-//                        .clipped()
-//                } placeholder: {
-//                    ProgressView() // Placeholder while loading
-//                }
-//            }
-            
-            
-            if let guardImage = news.urlToImage, let imageUrl = URL(string: guardImage), ((news.urlToImage?.isEmpty) == nil) {
-                            
-                AsyncImage(url: imageUrl) { image in
-                    image.resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity)
-                        .clipped()
-                } placeholder: {
-                    ProgressView() // Placeholder for missing image
-                }
-            }
+        
+            loadImage(urlString: news.urlToImage)
             
             Text(news.title)
-                .font(.headline)
                 .lineLimit(2)
-                .truncationMode(.tail)
+                .multilineTextAlignment(.leading) // untuk posisi text mulai dari start
+                .font(.headline)
                 .foregroundColor(.black)
+                .truncationMode(.tail)
                 .padding(.horizontal, 8)
                 .padding(.top, 24)
 
             
             Text(news.description ?? "-")
-                .font(.subheadline)
-                .lineLimit(2)
-                .truncationMode(.tail)
-                .foregroundColor(.gray)
+                .lineLimit(2) // untuk max line pada text
+                .multilineTextAlignment(.leading) // untuk posisi text mulai dari start
+                .font(.subheadline) // untuk size text
+                .foregroundColor(.gray) // untuk warna text
+                .truncationMode(.tail) // untuk titik titk di akhir text
                 .padding(.top, 8)
                 .padding(.horizontal, 8)
             
@@ -134,11 +117,9 @@ struct NewsItem: View {
         .padding()
         .background(Color.white)
         .cornerRadius(8)
-        .padding(.trailing, 8) // padding end
-        .padding(.leading, 24) // padding start
-        .padding(.vertical, 8)
+        .padding(EdgeInsets(top: 8, leading: 8, bottom: 0, trailing: 8))
         .shadow(color: Color.gray.opacity(0.5), radius: 3, x: 0, y: 2)
-        
+
     }
 }
 

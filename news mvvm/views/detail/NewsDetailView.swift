@@ -15,17 +15,8 @@ struct NewsDetailView: View {
         
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // News Image with guard for nullsafety
-                if let guardImage = news.urlToImage, let imageUrl = URL(string: guardImage), ((news.urlToImage?.isEmpty) == nil) {
-                    AsyncImage(url: imageUrl) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(maxWidth: .infinity)
-                            .clipped()
-                    } placeholder: {
-                        ProgressView() // Placeholder for missing image
-                    }
-                }
+                
+                loadImage(urlString: news.urlToImage, maxHeight: 300)
                 
                 // News Title
                 Text(news.title)
@@ -46,6 +37,7 @@ struct NewsDetailView: View {
                         .foregroundColor(.secondary)
                     
                     Spacer()
+                    
                     Text(formatDate(news.publishedAt))
                         .font(.footnote)
                         .foregroundColor(.secondary)
@@ -66,18 +58,3 @@ struct NewsDetailView: View {
     }
     
 }
-
-//#Preview {
-//    NewsDetailView(
-//        news:Article(
-//            author: "Jane Smith",
-//            content: "Another article content.",
-//            description: "Short description for the second news.",
-//            publishedAt: "2024-12-05T10:00:00Z",
-//            source: Source(id:"2", name: "Another News"),
-//            title: "Big Announcement Today!",
-//            url:"",
-//            urlToImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcMZAw6lm9s-UNFPFMRXSAe1t4r1dWS4nKkw&s"
-//        )
-//    )
-//}

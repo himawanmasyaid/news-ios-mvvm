@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct news_mvvmApp: App {
+    @StateObject var homeViewModel = HomeViewModel()
     var body: some Scene {
         WindowGroup {
             SplashView()
-        }
+        }.environmentObject(homeViewModel)
     }
 }

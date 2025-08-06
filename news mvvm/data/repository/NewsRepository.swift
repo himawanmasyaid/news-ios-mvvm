@@ -13,6 +13,7 @@ import Alamofire
 protocol NewsRepositoryProtocol {
     func fetchNews(country: String, completion: @escaping (Result<[Article], Error>) -> Void)
     func fetchNewsByCategory(category: String, completion: @escaping (Result<[Article], Error>) -> Void)
+    func fetchSearchKeyword(keyword: String, completion: @escaping (Result<[Article], Error>) -> Void)
 }
 
 final class NewsRepository : NewsRepositoryProtocol {
@@ -40,8 +41,6 @@ final class NewsRepository : NewsRepositoryProtocol {
         
     }
     
-    // GET https://newsapi.org/v2/top-headlines?country=de&category=business&apiKey=e8c6268442f94048b6483b13d122aed6
-
     func fetchNewsByCategory(category: String, completion: @escaping (Result<[Article], any Error>) -> Void) {
         let url = "\(BASE_URL)/top-headlines"
         let parameters: [String: String] = [
@@ -62,5 +61,25 @@ final class NewsRepository : NewsRepositoryProtocol {
         
     }
     
+
+    func fetchSearchKeyword(keyword: String, completion: @escaping (Result<[Article], any Error>) -> Void) {
+        
+        let url = "\(BASE_URL)/everything"
+        let parameters: [String: String] = [
+            "country": "us",
+            "q": keyword,
+            "apiKey": API_KEY
+        ]
+        
+        AF.request(url, parameters: parameters).responseDecodable(of: NewsResponse.self) { response in
+            switch response.result {
+            case .success(let newsResponse):
+                completion(.success(newsResponse.articles))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+    }
     
 }

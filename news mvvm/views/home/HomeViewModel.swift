@@ -15,7 +15,6 @@ class HomeViewModel: ObservableObject {
     @Published var categoryList: [CategoryModel] = []
     @Published var isLoadingHeadline: Bool = false
     @Published var errorMessageHeadline: String?
-    @Published var counterView: Int = 0
     
     private let newsRepository: NewsRepositoryProtocol
         

@@ -19,17 +19,29 @@ struct HomeView: View {
                 
                 // toolbar
                 HStack {
+                    
                     Spacer()
+                                        
                     Image("ic_news")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 50, height: 60)
+                        .padding(.leading, 32)
+                    
                     Spacer()
+                    
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.gray) // Set icon color
+                        .padding(.trailing, 24)
+                        .onTapGesture {
+                            
+                        }
                     
                 }.frame(height: 50)
                     .background(Color.white)
                     .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 2)
-    
+                
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     CategoryContentView(viewModel: viewModel)
                 }.padding(.top, 24)
@@ -39,7 +51,7 @@ struct HomeView: View {
                 ScrollView() {
                     
                     HStack {
-                        Text("Top Headline: \(homeViewModel.counterView)")
+                        Text("Top Headline")
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.black)
                             .padding(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 0))
@@ -50,13 +62,16 @@ struct HomeView: View {
                     HeadlineContentView(viewModel: viewModel)
                     
                 }
-    
                 
-            }.onAppear {
+                
+            }
+            .background(Color.white)
+            .onAppear {
                 viewModel.getCategory()
                 viewModel.getTopHeadlines()
             }
-        }.environmentObject(homeViewModel)
+            .environmentObject(homeViewModel)
+        }
     }
     
 }
@@ -93,7 +108,7 @@ struct CategoryContentView: View {
                 } else {
                     Spacer(minLength: 16)
                 }
-                            
+                
             }
         }
     }
@@ -197,7 +212,7 @@ struct CategoryItemView: View {
     let category : CategoryModel
     
     var body: some View {
- 
+        
         Text("\(category.title)")
             .font(.system(size: 16, weight: .regular))
             .foregroundColor(.black)
@@ -209,5 +224,6 @@ struct CategoryItemView: View {
 #Preview {
     
     HomeView()
+        .environmentObject(HomeViewModel())
     
 }

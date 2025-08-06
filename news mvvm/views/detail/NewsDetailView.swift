@@ -10,9 +10,9 @@ import SwiftUI
 struct NewsDetailView: View {
     
     let news : Article
+    @EnvironmentObject var homeViewModel: HomeViewModel
     
     var body: some View {
-        
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 
@@ -51,6 +51,8 @@ struct NewsDetailView: View {
                     .foregroundColor(.black)
             }
             .padding()
+        }.environmentObject(homeViewModel).onAppear {
+//            homeViewModel.counterView += 1
         }
         .navigationTitle("News Detail")
         .navigationBarTitleDisplayMode(.inline)

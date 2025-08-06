@@ -1,7 +1,6 @@
 # News-iOS-MVVM
 
-
-![Header Image](screenshots/news_feature_graphic.png)
+![Header Image](screenshoots/news_feature_graphic.png)
 
 ## Overview
 This project, News-iOS-MVVM, is a modern news application built using SwiftUI and adhering to the MVVM (Model-View-ViewModel) architectural pattern. It's designed to provide users with a seamless and intuitive experience for browsing news content. The app fetches and displays news articles, offering robust features like category filtering and a comprehensive search functionality, all wrapped in a clean, contemporary user interface.
